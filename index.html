@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>대출 계산기 A3</title>
+<style>
+:root{--bg:#f2f2f2;--card:#fff;--ink:#1d1d1f;--sub:#6e6e73;--line:#e5e5ea;--blue:#000;--green:#8e8e93;--orange:#d1d1d6;--a:0;--b:0;--c:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Apple SD Gothic Neo",Pretendard,system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;padding-bottom:64px}
+nav{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:14px 22px;background:rgba(245,245,247,.8);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.06);font-size:14px}
+nav span{color:var(--sub);font-size:12px}
+main{max-width:640px;margin:0 auto;padding:0 18px}
+h1{font-size:40px;line-height:1.1;letter-spacing:-.03em;font-weight:700;margin:40px 0 10px}
+.lead{color:var(--sub);font-size:17px;margin-bottom:28px}
+.card{background:var(--card);border-radius:24px;padding:22px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.field{display:block;padding:14px 0;border-bottom:1px solid var(--line)}
+.field:last-child{border:0}
+.field>span{display:block;font-size:13px;color:var(--sub);margin-bottom:6px}
+.field>span small{font-size:11px;margin-left:6px;color:#a1a1a6}
+.f{display:flex;align-items:baseline;gap:8px}
+.f input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:32px;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+.f em{font-style:normal;color:var(--sub);font-size:15px}
+.field i{display:block;font-style:normal;color:var(--blue);font-size:13px;margin-top:2px;min-height:16px}
+.hero{text-align:center;padding:34px 22px 26px}
+.eyebrow{color:var(--sub);font-size:14px;font-weight:500}
+.big{font-size:54px;font-weight:700;letter-spacing:-.04em;margin:6px 0 10px;line-height:1.05}
+.chip{display:inline-block;background:#000;color:#fff;font-size:13px;font-weight:600;padding:6px 12px;border-radius:99px}
+.seg{display:flex;background:#eeeef0;border-radius:12px;padding:3px;margin:24px 0 22px}
+.seg button{flex:1;border:0;background:none;padding:9px 0;border-radius:10px;font:inherit;font-size:14px;font-weight:600;color:var(--sub);cursor:pointer;transition:.2s}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.bar{display:flex;height:14px;border-radius:99px;overflow:hidden;background:#eee}
+.bar i{display:block;height:100%;transition:width .4s cubic-bezier(.2,.8,.2,1)}
+.s1{width:calc(var(--a)*1%);background:var(--blue)}.s2{width:calc(var(--b)*1%);background:var(--green)}.s3{width:calc(var(--c)*1%);background:var(--orange)}
+.legend{display:flex;justify-content:center;gap:16px;margin-top:12px;font-size:12px;color:var(--sub)}
+.legend b{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+h3{font-size:19px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:15px}
+.row:last-child{border:0}
+.row span small{display:block;color:#a1a1a6;font-size:12px;margin-top:2px}
+.row b{font-weight:600;white-space:nowrap}
+.row.total{font-size:17px}.row.total b{color:var(--blue);font-size:20px}
+.cmp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.cmp div{background:var(--bg);border-radius:16px;padding:14px 8px;text-align:center}
+.cmp small{display:block;color:var(--sub);font-size:12px;margin-bottom:4px}
+.cmp b{font-size:15px}
+details summary{cursor:pointer;font-weight:600;font-size:15px;list-style:none;display:flex;justify-content:space-between}
+details summary::after{content:"+";color:var(--blue);font-size:20px;line-height:1}
+details[open] summary::after{content:"−"}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.grid label{font-size:12px;color:var(--sub);display:block}
+.grid input,.grid select{width:100%;margin-top:6px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:15px;background:#fafafa;color:var(--ink)}
+.grid .w{grid-column:1/-1}
+.note{color:#86868b;font-size:12px;line-height:1.6;text-align:center;margin-top:22px}
+@media(max-width:420px){h1{font-size:34px}.big{font-size:46px}}
+
+.box{display:block;padding:12px 0 6px}
+.lb{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;margin-bottom:10px}
+.lb small{font-size:12px;font-weight:400;color:#86868b}
+.lb b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px}
+.ib{display:flex;align-items:center;gap:8px;border:2px solid #d2d2d7;background:#fafafa;border-radius:16px;padding:14px 16px;transition:.15s;cursor:text}
+.ib:focus-within{border-color:var(--blue);background:#fff;box-shadow:0 0 0 5px rgba(0,0,0,.12)}
+.ib input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:28px;font-weight:700;letter-spacing:-.02em;color:var(--ink);text-align:right}
+.ib input::placeholder{color:#c7c7cc}
+.ib em{font-style:normal;color:var(--sub);font-size:15px;font-weight:600}
+.ib u{text-decoration:none;color:var(--blue);font-size:16px;margin-left:2px}
+.box>i{display:block;font-style:normal;color:var(--blue);font-size:13px;margin:6px 4px 0;min-height:16px;text-align:right}
+.hint{color:var(--sub);font-size:13px;margin-bottom:4px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 14px}
+.chips button{border:1px solid #d2d2d7;background:#fff;border-radius:99px;padding:7px 13px;font:inherit;font-size:13px;font-weight:600;color:var(--blue);cursor:pointer}
+.chips button:active{background:#eee}
+.chips .r{color:var(--sub);margin-left:auto}
+
+.panel{background:linear-gradient(160deg,#2c2c2e,#000);border-radius:28px;padding:22px 18px 14px;margin-bottom:14px;color:#fff}
+.panel h3{color:#fff}
+.panel .hint{color:rgba(255,255,255,.8)}
+.panel .lb{color:#fff}.panel .lb small{color:rgba(255,255,255,.75)}
+.panel .lb b{background:#fff;color:var(--blue)}
+.panel .ib{background:#fff;border-color:#fff}
+.panel .ib:focus-within{box-shadow:0 0 0 5px rgba(255,255,255,.35);border-color:#fff}
+.panel .box>i{color:#fff;opacity:.9}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:1px solid rgba(0,0,0,.08)}
+.dock div{max-width:640px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--sub)}
+.dock b{display:block;font-size:19px;color:var(--ink);letter-spacing:-.02em}
+.dock div>span:last-child{text-align:right}
+body{padding-bottom:110px}
+
+.sl{width:100%;-webkit-appearance:none;appearance:none;height:10px;border-radius:99px;outline:0;background:linear-gradient(to right,#000 calc(var(--p,100)*1%),#d1d1d6 0);margin:22px 0 10px;touch-action:pan-y}
+.sl::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid #000;box-shadow:0 3px 10px rgba(0,0,0,.3);cursor:grab}
+.sl::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:4px solid #000;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.pick{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px}
+.pick span{font-size:14px;color:var(--sub);font-weight:600}
+.pick b{font-size:34px;letter-spacing:-.04em}
+.ticks{display:flex;justify-content:space-between;font-size:12px;color:var(--sub)}
+.chips.st{justify-content:center;margin:14px 0}
+.chips.st button{flex:1;color:var(--ink);border-color:#d2d2d7;padding:10px 0}
+.chips.st .mx{background:#000;color:#fff;border-color:#000}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 18px}
+.mini div{background:var(--bg);border-radius:16px;padding:12px 6px;text-align:center}
+.mini small{display:block;color:var(--sub);font-size:11px;margin-bottom:4px}
+.mini b{font-size:15px}
+body{padding-bottom:64px}</style></head>
+<body>
+<nav><b>대출 계산기</b><span>스트레스 DSR 3단계</span></nav>
+<main>
+<h1>얼마까지<br>빌릴 수 있을까</h1>
+<p class="lead">세 가지만 입력하면 바로 계산</p>
+
+<section class="card"><h3>정보 입력</h3><p class="hint">직접 입력하거나 버튼으로 금액 추가</p>
+<label class="box" for="inc"><span class="lb"><b>1</b>연소득<small>공동명의는 합산</small></span><div class="ib"><input id="inc" inputmode="numeric" value="10000" placeholder="0"><em>만원</em><u>✎</u></div><i data-k="incH"></i></label><div class="chips"><button type="button" data-t="inc" data-add="1000">+1천만</button><button type="button" data-t="inc" data-add="5000">+5천만</button><button type="button" data-t="inc" data-add="10000">+1억</button><button type="button" class="r" data-t="inc" data-add="reset">지우기</button></div>
+<label class="box" for="pri"><span class="lb"><b>2</b>매매가<small>사려는 집 가격</small></span><div class="ib"><input id="pri" inputmode="numeric" value="100000" placeholder="0"><em>만원</em><u>✎</u></div><i data-k="priH"></i></label><div class="chips"><button type="button" data-t="pri" data-add="1000">+1천만</button><button type="button" data-t="pri" data-add="5000">+5천만</button><button type="button" data-t="pri" data-add="10000">+1억</button><button type="button" class="r" data-t="pri" data-add="reset">지우기</button></div>
+<label class="box" for="kb"><span class="lb"><b>3</b>KB시세<small></small></span><div class="ib"><input id="kb" inputmode="numeric" value="100000" placeholder="0"><em>만원</em><u>✎</u></div><i data-k="kbH"></i></label><div class="chips"><button type="button" data-same="kb">매매가와 동일</button><button type="button" data-t="kb" data-add="1000">+1천만</button><button type="button" data-t="kb" data-add="10000">+1억</button><button type="button" class="r" data-t="kb" data-add="reset">지우기</button></div>
+</section>
+
+<section class="card hero">
+  <p class="eyebrow">최대 대출 가능액</p>
+  <div class="big" data-k="maxLoan"></div>
+  <span class="chip" data-k="bind"></span>
+  <div class="seg"><button data-ltv="0.7">LTV 70%</button><button data-ltv="0.5">LTV 50%</button><button data-ltv="0.4">LTV 40%</button></div>
+</section>
+
+<section class="card slc">
+  <h3>대출 금액 조절</h3>
+  <p class="hint">바를 좌우로 움직이면 1천만원 단위로 변경</p>
+  <div class="pick"><span>내가 받을 대출금</span><b data-k="loan"></b></div>
+  <input id="sl" class="sl" type="range" min="0" max="1000" step="1000" value="0">
+  <div class="ticks"><span>0</span><span>최대 <i style="font-style:normal" data-k="maxLoan"></i></span></div>
+  <div class="chips st"><button type="button" data-step="-1000">− 1천만</button><button type="button" data-step="1000">+ 1천만</button><button type="button" class="mx" data-max>최대</button></div>
+  <div class="mini"><div><small>월 상환액</small><b data-k="pay"></b></div><div><small>스트레스 DSR</small><b data-k="dsrNow"></b></div><div><small>LTV</small><b data-k="ltvNow"></b></div></div>
+  <div class="bar"><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
+  <div class="legend"><span><b style="background:var(--blue)"></b>대출</span><span><b style="background:var(--green)"></b>자기자금</span><span><b style="background:var(--orange)"></b>세금·복비</span></div>
+</section>
+
+<section class="card">
+  <h3>필요 자금</h3>
+  <div class="row"><span>월 상환액<small>현재 금리 기준</small></span><b data-k="pay"></b></div>
+  <div class="row"><span>월 상환액<small>스트레스 금리 기준</small></span><b data-k="payS"></b></div>
+  <div class="row"><span>취득세<small data-k="acqR"></small></span><b data-k="acq"></b></div>
+  <div class="row"><span>중개보수<small data-k="brkR"></small></span><b data-k="brk"></b></div>
+  <div class="row total"><span>필요 자기자금<small>매매가 − 대출 + 취득세 + 중개보수</small></span><b data-k="own"></b></div>
+</section>
+
+<section class="card">
+  <h3>한도 분석</h3>
+  <div class="row"><span>LTV 한도<small data-k="ltvTag"></small></span><b data-k="ltvL"></b></div>
+  <div class="row"><span>스트레스 DSR 한도<small>적용 금리 <i style="font-style:normal" data-k="rate"></i></small></span><b data-k="dsrL"></b></div>
+  <div class="row"><span>정책 대출 상한</span><b data-k="capL"></b></div>
+  <div class="row"><span>LTV 기준가<small>매매가와 KB시세 중 낮은 값</small></span><b data-k="basis"></b></div>
+  <div class="cmp"><div><small>LTV 70%</small><b data-k="c70"></b></div><div><small>LTV 50%</small><b data-k="c50"></b></div><div><small>LTV 40%</small><b data-k="c40"></b></div></div>
+</section>
+
+<section class="card">
+  <details><summary>세부 조건</summary>
+  <div class="grid">
+    <div><label>대출 금리 %</label><input id="base" type="number" step="0.1" value="4.0"></div>
+    <div><label>스트레스 가산금리 %p</label><input id="stress" type="number" step="0.05" value="1.5"></div>
+    <div><label>대출 기간 년</label><input id="term" type="number" value="30"></div>
+    <div><label>DSR 한도 %</label><input id="dsr" type="number" value="40"></div>
+    <div class="w"><label>정책 대출 상한</label><select id="cap"><option value="tier">가격대별 (15억 이하 6억 · 15~25억 4억 · 25억 초과 2억)</option><option value="6">일괄 6억</option><option value="none">상한 없음</option></select></div>
+    <div class="w"><label>주택 면적</label><select id="area"><option value="u85">전용 85㎡ 이하</option><option value="o85">전용 85㎡ 초과 (농특세 0.2%)</option></select></div>
+  </div></details>
+</section>
+<p class="note">참고용 계산이며 실제 한도는 금융기관 심사와 최신 규제에 따라 달라질 수 있음<br>1주택 처분조건 · 생애최초 감면 · 소액임차보증금 공제 미반영</p>
+</main>
+<script>const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const S={ltv:0.7,want:null};
+const num=v=>Number(String(v).replace(/[^0-9.]/g,''))||0;
+const won=n=>{n=Math.round(n);if(n<=0)return '0원';const e=Math.floor(n/10000),m=n%10000;
+  if(e&&!m)return e+'억원';return (e?e+'억 ':'')+m.toLocaleString('ko-KR')+'만원'};
+const pct=n=>(Math.round(n*10)/10).toFixed(1)+'%';
+const loanFromPay=(pay,rate,yrs)=>{const r=rate/1200,N=yrs*12;return r?pay*(1-Math.pow(1+r,-N))/r:pay*N};
+const payFromLoan=(L,rate,yrs)=>{const r=rate/1200,N=yrs*12;return r?L*r/(1-Math.pow(1+r,-N)):L/N};
+const capFor=(price,mode)=>mode==='none'?Infinity:mode==='6'?60000:(price<=150000?60000:price<=250000?40000:20000);
+function acqTax(price,area){
+  const p=price/10000;let rate=p<=6?1:p<=9?(p*2/3-3):3;
+  const tax=price*rate/100,edu=tax*0.1,agri=area==='o85'?price*0.002:0;
+  return {rate,total:tax+edu+agri}
+}
+function brokerage(price){
+  let rate,cap=Infinity;
+  if(price<5000){rate=0.6;cap=25}else if(price<20000){rate=0.5;cap=80}
+  else if(price<90000)rate=0.4;else if(price<120000)rate=0.5;else if(price<150000)rate=0.6;else rate=0.7;
+  const fee=Math.min(price*rate/100,cap);return {rate,fee,total:fee*1.1}
+}
+function compute(){
+  const inc=num($('#inc').value),pri=num($('#pri').value),kb=num($('#kb').value);
+  const base=num($('#base').value),stress=num($('#stress').value),yrs=num($('#term').value)||30,dsr=num($('#dsr').value)||40;
+  const basis=Math.min(pri,kb||pri);
+  const dsrL=loanFromPay(inc*dsr/100/12,base+stress,yrs);
+  const cap=capFor(pri,$('#cap').value);
+  const lim=r=>Math.max(0,Math.min(basis*r,dsrL,cap));
+  const ltvL=basis*S.ltv,maxLoan=Math.max(0,Math.min(ltvL,dsrL,cap));
+  const loan=S.want==null?maxLoan:Math.min(S.want,maxLoan);
+  const bind=loan<maxLoan?'직접 설정 금액':maxLoan===0?'-':(maxLoan===ltvL?'LTV 한도 적용':maxLoan===dsrL?'스트레스 DSR 한도 적용':'정책 상한 적용');
+  const at=acqTax(pri,$('#area').value),br=brokerage(pri);
+  const own=Math.max(0,pri-loan)+at.total+br.total;
+  const payReal=payFromLoan(loan,base,yrs),payStress=payFromLoan(loan,base+stress,yrs);
+  return {inc,pri,kb,basis,ltvL,dsrL,cap,loan,maxLoan,bind,at,br,own,payReal,payStress,
+    c70:lim(.7),c50:lim(.5),c40:lim(.4),
+    dsrNow:inc?payStress*12/inc*100:0,ltvNow:basis?loan/basis*100:0,rate:base+stress,yrs}
+}
+function update(){
+  const r=compute();
+  const T={
+    loan:won(r.loan),bind:r.bind,maxLoan:won(r.maxLoan),ltvL:won(r.ltvL),dsrL:won(r.dsrL),
+    capL:isFinite(r.cap)?won(r.cap):'제한 없음',
+    pay:won(r.payReal),payS:won(r.payStress),
+    acq:won(r.at.total),acqR:'세율 '+pct(r.at.rate)+' (교육세 포함)',
+    brk:won(r.br.total),brkR:'상한요율 '+r.br.rate+'% (부가세 포함)',
+    own:won(r.own),price:won(r.pri),cost:won(r.at.total+r.br.total),
+    c70:won(r.c70),c50:won(r.c50),c40:won(r.c40),
+    dsrNow:pct(r.dsrNow),ltvNow:pct(r.ltvNow),rate:pct(r.rate),
+    incH:won(r.inc),priH:won(r.pri),kbH:won(r.kb),
+    ltvTag:'LTV '+Math.round(S.ltv*100)+'%',basis:won(r.basis)
+  };
+  $$('[data-k]').forEach(e=>{const v=T[e.dataset.k];if(v!==undefined)e.textContent=v});
+  const tot=Math.max(1,r.pri+r.at.total+r.br.total);
+  const root=document.documentElement.style;
+  root.setProperty('--a',(r.loan/tot*100).toFixed(2));
+  root.setProperty('--b',(Math.max(0,r.pri-r.loan)/tot*100).toFixed(2));
+  root.setProperty('--c',((r.at.total+r.br.total)/tot*100).toFixed(2));
+  $$('[data-ltv]').forEach(b=>b.classList.toggle('on',Number(b.dataset.ltv)===S.ltv));
+  const sl=$('#sl');if(sl){const mx=Math.max(1000,Math.ceil(r.maxLoan/1000)*1000);sl.max=mx;sl.value=r.loan;sl.style.setProperty('--p',(r.loan/mx*100).toFixed(2))}
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  $$('#inc,#pri,#kb').forEach(i=>i.addEventListener('input',()=>{
+    const n=num(i.value);i.value=n?n.toLocaleString('ko-KR'):'';update()}));
+  $$('#base,#stress,#term,#dsr').forEach(i=>i.addEventListener('input',update));
+  $$('#cap,#area').forEach(i=>i.addEventListener('change',update));
+  $$('[data-ltv]').forEach(b=>b.addEventListener('click',()=>{S.ltv=Number(b.dataset.ltv);update()}));
+  $$('#inc,#pri,#kb').forEach(i=>i.dispatchEvent(new Event('input')));
+});
+
+document.addEventListener('DOMContentLoaded',()=>{
+ $$('input[inputmode]').forEach(i=>i.addEventListener('focus',()=>setTimeout(()=>{try{i.select()}catch(e){}},0)));
+ const sl=$('#sl');
+ sl.addEventListener('input',()=>{const m=compute().maxLoan,v=Number(sl.value);S.want=v>=m?null:v;update()});
+ $$('[data-step]').forEach(b=>b.addEventListener('click',()=>{const r=compute();S.want=Math.min(r.maxLoan,Math.max(0,r.loan+Number(b.dataset.step)));if(S.want>=r.maxLoan)S.want=null;update()}));
+ $$('[data-max]').forEach(b=>b.addEventListener('click',()=>{S.want=null;update()}));
+});
+
+document.addEventListener('DOMContentLoaded',()=>{
+ $$('[data-add]').forEach(b=>b.addEventListener('click',()=>{const i=$('#'+b.dataset.t),a=b.dataset.add;
+  i.value=a==='reset'?'':String(Math.max(0,num(i.value)+Number(a)));i.dispatchEvent(new Event('input'))}));
+ $$('[data-same]').forEach(b=>b.addEventListener('click',()=>{const t=$('#'+b.dataset.same);t.value=$('#pri').value;t.dispatchEvent(new Event('input'))}));
+});
+</script>
+</body></html>
